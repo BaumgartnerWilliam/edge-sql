@@ -17,34 +17,34 @@ public class EdgeCompiler
             connectionString = (string)tmp;
         }
 
-        if (command.StartsWith("select ", StringComparison.InvariantCultureIgnoreCase))
-        {
+        //if (command.StartsWith("select ", StringComparison.InvariantCultureIgnoreCase))
+        //{
             return async (queryParameters) =>
             {
                 return await this.ExecuteQuery(connectionString, command, (IDictionary<string, object>)queryParameters);
             };
-        }
-        else if (command.StartsWith("insert ", StringComparison.InvariantCultureIgnoreCase)
-            || command.StartsWith("update ", StringComparison.InvariantCultureIgnoreCase)
-            || command.StartsWith("delete ", StringComparison.InvariantCultureIgnoreCase))
-        {
-            return async (queryParameters) =>
-            {
-                return await this.ExecuteNonQuery(connectionString, command, (IDictionary<string, object>)queryParameters);
-            };
-        }
-        else if (command.StartsWith("exec ", StringComparison.InvariantCultureIgnoreCase))
-        {
-            return async (queryParameters) => await
-                this.ExecuteStoredProcedure(
-                    connectionString,
-                    command,
-                    (IDictionary<string, object>)queryParameters);
-        }
-        else
-        {
-            throw new InvalidOperationException("Unsupported type of SQL command. Only select, insert, update, delete, and exec are supported.");
-        }
+        //}
+        //else if (command.StartsWith("insert ", StringComparison.InvariantCultureIgnoreCase)
+        //    || command.StartsWith("update ", StringComparison.InvariantCultureIgnoreCase)
+        //    || command.StartsWith("delete ", StringComparison.InvariantCultureIgnoreCase))
+        //{
+        //    return async (queryParameters) =>
+        //    {
+        //        return await this.ExecuteNonQuery(connectionString, command, (IDictionary<string, object>)queryParameters);
+        //    };
+        //}
+        //else if (command.StartsWith("exec ", StringComparison.InvariantCultureIgnoreCase))
+        //{
+        //    return async (queryParameters) => await
+        //        this.ExecuteStoredProcedure(
+        //            connectionString,
+        //            command,
+        //            (IDictionary<string, object>)queryParameters);
+        //}
+        //else
+        //{
+        //    throw new InvalidOperationException("Unsupported type of SQL command. Only select, insert, update, delete, and exec are supported.");
+        //}
     }
 
     void AddParamaters(SqlCommand command, IDictionary<string, object> parameters)
@@ -101,6 +101,10 @@ public class EdgeCompiler
                     else if (type == typeof(IDataReader))
                     {
                         resultRecord[i] = "<IDataReader>";
+                    }
+                    else if (type == typeof (short))
+                    {
+                        resultRecord[i] = (int) (short) resultRecord[i];
                     }
 
                     dataObject.Add(record.GetName(i), resultRecord[i]);
